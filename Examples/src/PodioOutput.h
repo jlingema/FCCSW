@@ -27,6 +27,9 @@ public:
   virtual StatusCode finalize();
 
 private:
+  /// Demangles the typeid name and returns demangled name
+  std::string demangle(const char* type);
+
   bool m_first;
   std::string m_filename;
   std::vector<std::string> m_outputCommands;

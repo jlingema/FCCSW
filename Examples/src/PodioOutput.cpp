@@ -2,6 +2,10 @@
 #include "TFile.h"
 #include "FWCore/PodioDataSvc.h"
 
+#include <cstdlib>
+#include <memory>
+#include <cxxabi.h>
+
 DECLARE_COMPONENT(PodioOutput)
 
 PodioOutput::PodioOutput(const std::string& name, ISvcLocator* svcLoc) :
@@ -34,21 +38,9 @@ StatusCode PodioOutput::execute() {
   for (auto& i : m_podioDataSvc->getCollections()){
     // TODO: we need the class name in a better way
     if (m_first) {
-      std::string name( typeid(*(i.second)).name() );
-      size_t  pos = name.find_first_not_of("0123456789");
-      name.erase(0,pos);
-      // demangling the namespace: due to namespace additional characters were introduced:
-      // e.g. N3fcc18TrackHit
-      // remove any number+char before the namespace:
-      pos = name.find_first_of("0123456789");
-      size_t pos1 = name.find_first_not_of("0123456789", pos);
-      name.erase(0, pos1);
-      // replace any numbers between namespace and class with "::"
-      pos = name.find_first_of("0123456789");
-      pos1 = name.find_first_not_of("0123456789", pos);
-      name.replace(pos, pos1-pos, "::");
+      auto name = demangle(typeid(*(i.second)).name());
 
-      pos = name.find("Collection");
+      size_t pos = name.find("Collection");
       name.erase(pos,pos+10);
       std::string classname = "vector<"+name+"Data>";
       int isOn = 0;
@@ -78,4 +70,19 @@ StatusCode PodioOutput::finalize() {
   m_file->Write();
   m_file->Close();
   return StatusCode::SUCCESS;
+}
+
+std::string PodioOutput::demangle(const char* type) {
+  int status = -4; // some arbitrary value to eliminate the compiler warning
+
+  // __cxa_demangle returns malloc allocated buffer, to avoid leaking memory,
+  // place in unique_ptr and tell to use std::free when going out of scope.
+  // status should be 0 if demangling succeeded.
+  // see https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-4.3/a01696.html
+  // and http://stackoverflow.com/questions/281818/unmangling-the-result-of-stdtype-infoname
+  std::unique_ptr<char, void(*)(void*)> res {
+      abi::__cxa_demangle(type, NULL, NULL, &status),
+      std::free
+  };
+  return (status==0) ? res.get() : type;
 }
