@@ -24,12 +24,14 @@ geoservice = GeoSvc("GeoSvc", detectors=['file:Detector/DetFCChhTrackerSimple/co
 
 # Geant4 service
 # Configures the Geant simulation: geometry, physics list and user actions
-from Configurables import G4SimSvc
+from Configurables import G4SimSvc, G4ConstantMagneticFieldTool
 # giving the names of tools will initialize the tools of that type
-geantservice = G4SimSvc("G4SimSvc", detector='G4DD4hepDetector', physicslist="G4FtfpBert", actions="G4FullSimActions")
-
-from Configurables import G4ConstantMagneticFieldTool
 field = G4ConstantMagneticFieldTool("G4ConstantMagneticFieldTool", FieldOn=True, IntegratorStepper="ClassicalRK4")
+geantservice = G4SimSvc("G4SimSvc",
+                        detector='G4DD4hepDetector',
+                        physicslist="G4FtfpBert",
+                        actions="G4FullSimActions",
+                        magneticField=field)
 
 # Geant4 algorithm
 # Translates EDM to G4Event, passes the event to G4, writes out outputs via tools

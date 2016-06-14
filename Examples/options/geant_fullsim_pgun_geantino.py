@@ -15,7 +15,11 @@ geoservice = GeoSvc("GeoSvc", detectors=['file:Detector/DetFCChhTrackerSimple/co
 # Configures the Geant simulation: geometry, physics list and user actions
 from Configurables import G4SimSvc
 # giving the names of tools will initialize the tools of that type
-geantservice = G4SimSvc("G4SimSvc", detector='G4DD4hepDetector', physicslist="G4FtfpBert", actions="G4FullSimActions")
+geantservice = G4SimSvc("G4SimSvc",
+                        detector='G4DD4hepDetector',
+                        physicslist="G4FtfpBert",
+                        actions="G4FullSimActions",
+                        magneticField="G4ConstantMagneticFieldTool")
 
 geantservice.G4commands += ["/tracking/verbose 1"]
 

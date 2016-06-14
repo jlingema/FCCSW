@@ -4,8 +4,9 @@
 gaudi_subdir(Examples v1r0)
 
 # this declaration will not be needed in the future
-gaudi_depends_on_subdirs(GaudiAlg FWCore Sim/SimG4Interface Detector/DetInterface)
+gaudi_depends_on_subdirs(GaudiAlg FWCore Detector/DetInterface)
 
+find_package(Gaussino)
 find_package(ROOT COMPONENTS MathCore GenVector Geom)
 find_package(DD4hep COMPONENTS DDG4)
 include(DD4hep)
@@ -13,9 +14,8 @@ find_package(Geant4)
 
 gaudi_add_module(Examples
                  src/*.cpp
-		           INCLUDE_DIRS ROOT GaudiKernel Geant4 DD4hep SimG4Interface DetInterface
-                 LINK_LIBRARIES GaudiAlgLib FWCore ROOT GaudiKernel DD4hep Geant4)
-
+                 INCLUDE_DIRS ROOT GaudiKernel Geant4 DD4hep Gaussino DetInterface
+                 LINK_LIBRARIES GaudiAlgLib FWCore ROOT GaudiKernel DD4hep Geant4 Gaussino)
 
 include(CTest)
 
@@ -25,12 +25,12 @@ gaudi_add_test(DummyGen
                FRAMEWORK tests/options/examplejob.py)
 gaudi_add_test(DummyGenCheck
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/tests
-			         COMMAND python ./scripts/dummy_gen_test.py
-			         DEPENDS DummyGen)
+               COMMAND python ./scripts/dummy_gen_test.py
+               DEPENDS DummyGen)
 gaudi_add_test(DummyCheck
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/tests
-			         COMMAND python ./scripts/test.py
-			         FAILS)
+               COMMAND python ./scripts/test.py
+               FAILS)
 # End of simple examples
 
 # Tests of example configs
@@ -40,18 +40,18 @@ gaudi_add_test(GeantFullSimTrackerHits
 gaudi_add_test(GeantFullSimTrackerHitsWithField
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                FRAMEWORK options/geant_fullsim_field.py)
-gaudi_add_test(GeantFullSimWithGeantino
-               WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-               FRAMEWORK options/geant_fullsim_pgun_geantino.py)
+# gaudi_add_test(GeantFullSimWithGeantino
+#                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+#                FRAMEWORK options/geant_fullsim_pgun_geantino.py)
 gaudi_add_test(GeantFullSimParticleGun
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                FRAMEWORK options/geant_pgun_fullsim.py)
-gaudi_add_test(GeantFastSimTracker
-               WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-               FRAMEWORK options/geant_fastsim.py)
-gaudi_add_test(GeantFastSimTrackerTkLayout
-               WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-               FRAMEWORK options/geant_fastsim_tklayout.py)
+# gaudi_add_test(GeantFastSimTracker
+#                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+#                FRAMEWORK options/geant_fastsim.py)
+# gaudi_add_test(GeantFastSimTrackerTkLayout
+#                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+#                FRAMEWORK options/geant_fastsim_tklayout.py)
 gaudi_add_test(SimplePythia
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                FRAMEWORK options/simple_pythia.py)
@@ -61,8 +61,8 @@ gaudi_add_test(SimpleWorkflow
 gaudi_add_test(ExampleOptions
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                FRAMEWORK options/example_options.py)
-gaudi_add_test(DumpGDML
-               FRAMEWORK options/dumpGeo.py)
+# gaudi_add_test(DumpGDML
+#                FRAMEWORK options/dumpGeo.py)
 
 # Test of the format-checker:
 gaudi_add_test(FormatCheckerOneFile

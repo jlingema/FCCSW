@@ -30,7 +30,8 @@ from Configurables import G4SimSvc
 geantservice = G4SimSvc("G4SimSvc",
                         detector='G4DD4hepDetector',
                         physicslist="G4FtfpBert",
-                        actions="G4FullSimActions")
+                        actions="G4FullSimActions",
+                        magneticField="G4ConstantMagneticFieldTool")
 
 from Configurables import G4SimAlg, G4SaveTrackerHits, G4PrimariesFromEdmTool
 savetrackertool = G4SaveTrackerHits("G4SaveTrackerHits")

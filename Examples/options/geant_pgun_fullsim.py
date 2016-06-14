@@ -41,8 +41,11 @@ geoservice = GeoSvc("GeoSvc", detectors=['file:Detector/DetFCChhTrackerSimple/co
 from Configurables import G4SimSvc
 ## Geant4 service
 # Configures the Geant simulation: geometry, physics list and user actions
-geantservice = G4SimSvc("G4SimSvc", detector='G4DD4hepDetector', physicslist="G4FtfpBert",
-                        actions="G4FullSimActions")
+geantservice = G4SimSvc("G4SimSvc",
+                        detector='G4DD4hepDetector',
+                        physicslist="G4FtfpBert",
+                        actions="G4FullSimActions",
+                        magneticField="G4ConstantMagneticFieldTool")
 
 from Configurables import G4SimAlg, G4SaveTrackerHits, G4SaveCalHits, G4PrimariesFromEdmTool
 ## Geant4 algorithm
