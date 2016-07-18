@@ -62,7 +62,6 @@ if __name__ == "__main__":
     depth = base_depth
 
     error_dict, total_errors = write_report_files(base_dir, args.report_dir)
-
     substrings = []
     visited = []
 
