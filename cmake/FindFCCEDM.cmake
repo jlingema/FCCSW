@@ -5,6 +5,10 @@ find_library(FCCEDM_LIBRARY
               NAMES datamodel
               HINTS ${searchpath}
               PATH_SUFFIXES lib)
+find_library(FCCEDM_UTIL_LIBRARY
+              NAMES utilities
+              HINTS ${searchpath}
+              PATH_SUFFIXES lib)
 
 find_path(FCCEDM_INCLUDE_DIR
            NAMES datamodel/Point.h
@@ -14,11 +18,11 @@ find_path(FCCEDM_INCLUDE_DIR
 unset(searchpath)
 
 set(FCCEDM_INCLUDE_DIRS ${FCC_INCLUDE_DIR})
-set(FCCEDM_LIBRARIES ${FCCEDM_LIBRARY})
+set(FCCEDM_LIBRARIES ${FCCEDM_LIBRARY} ${FCCEDM_UTIL_LIBRARY})
 
 include(FindPackageHandleStandardArgs)
 # handle the QUIETLY and REQUIRED arguments and set FCCEDM_FOUND to TRUE
 # if all listed variables are TRUE
-find_package_handle_standard_args(FCCEDM DEFAULT_MSG FCCEDM_INCLUDE_DIR FCCEDM_LIBRARY)
+find_package_handle_standard_args(FCCEDM DEFAULT_MSG FCCEDM_INCLUDE_DIR FCCEDM_LIBRARY FCCEDM_UTIL_LIBRARY)
 
 mark_as_advanced(FCCEDM_FOUND)
