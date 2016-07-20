@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+import os
+import datetime
+import mkreportindexfunctions
+
+if __name__ == "__main__":
+    args = mkreportindexfunctions.parse_args()
+    mkreportindexfunctions.set_environment()
+    base_dir = os.path.abspath(args.source_dir.rstrip(os.sep))
+
+    # create a unique directory to store the report files + index
+    date_string = datetime.datetime.now().strftime("%y-%m-%d_%H:%M:%S")
+    args.report_dir = os.path.join(args.report_dir, date_string)
+    os.mkdir(args.report_dir)
+    # generate and write the report files
+    error_dict, total_errors = mkreportindexfunctions.write_report_files(base_dir, args.report_dir)
+    # generate and write the report index
+    substrings = []
+    visited = []
+    base_depth = len(base_dir.split(os.sep))
+    depth = base_depth
+    for path in error_dict.keys():
+        if path == base_dir:
+            # handle files in source directory
+            visited.append(path)
+            for file_name in error_dict[path]:
+                diff_map_name = mkreportindexfunctions.generate_report_name(path, file_name)
+                substrings.append("<a class='list-group-item file-item' data-url='{diff_map_name}'>{title}</a>".format(diff_map_name=diff_map_name, title=file_name))
+            continue
+        else:
+            # close divs as required
+            prev_depth = len(visited[-1].split(os.sep))
+            depth = len(path.split(os.sep))
+            visited.append(path)
+            while depth <= prev_depth:
+                substrings.append("</div>")
+                prev_depth -= 1
+        # create link + div for next sub-group
+        current_string = "<a href='#{id}' class='list-group-item' data-toggle='collapse'><i class='glyphicon glyphicon-chevron-right'></i> {name} <span class='badge'>{n}</span></a>\n<div id='{id}' class='list-group collapse'>"
+        # count the total number of errors found in sub-directories
+        cntr = 0
+        for path_name in error_dict.keys():
+            if path in path_name:
+                cntr += len(error_dict[path_name])
+        current_string = current_string.format(id=path.replace(os.sep, "_").replace(".", "")[1:], name=os.path.basename(path), n=cntr)
+        substrings.append(current_string)
+        # append any files that contain formatting violations
+        for file_name in error_dict[path]:
+            diff_map_name = mkreportindexfunctions.generate_report_name(path, file_name)
+            substrings.append("<a class='list-group-item file-item' data-url='{diff_map_name}'>{title}</a>".format(diff_map_name=diff_map_name, title=file_name))
+
+    while depth > base_depth:
+        substrings.append("</div>")
+        depth -= 1
+
+    # populate template from ./html/
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "html/report_index.html.in"), "r") as fobj:
+        report_template = fobj.read()
+    with open(os.path.join(args.report_dir, "index.html"), "w") as fobj:
+        fobj.write(report_template.format(links="\n".join(substrings), title=os.path.basename(base_dir), n=total_errors))
+    print("--------------------------------------------------------------------------------")
+    print("Check Complete\nNumber of errors found: {total_errors}\nReport index at: {index_path}".format(total_errors=total_errors, index_path=os.path.abspath(os.path.join(args.report_dir, "index.html"))))
+    print("--------------------------------------------------------------------------------")
