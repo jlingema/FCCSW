@@ -1,6 +1,9 @@
 #include "GaudiAlg/GaudiAlgorithm.h"
+#include "GaudiKernel/ToolHandle.h"
 
 #include "FWCore/DataHandle.h"
+
+#include "Generation/IParticleGraph.h"
 
 #include "datamodel/MCParticleCollection.h"
 #include "datamodel/TrackHitCollection.h"
@@ -15,11 +18,16 @@ public:
   {
     declareInput("genParticles", m_genParticles, "allGenParticles");
     declareInput("hits", m_trkHits, "hits");
+    declareProperty("graphTool", m_graphTool);
+    declarePrivateTool(m_graphTool, "ReadTestConsumer/ParticleGraphTool");
   }
 
   ~ReadTestConsumer() {};
 
   StatusCode initialize() {
+    if (m_graphTool.retrieve().isFailure()) {
+      return StatusCode::FAILURE;
+    }
     return GaudiAlgorithm::initialize();
   }
 
@@ -33,10 +41,14 @@ public:
     for (const auto& mcpart : *mcparticles) {
       if (10 < cntr++) {
         info() << "vertex x: " << mcpart.StartVertex().Position().X << endmsg;
+        auto daughters = m_graphTool->getAllChildParticles(mcpart);
+        for (auto& daughter : daughters) {
+          std::cout << daughter.getObjectID().index << " ";
+        }
+        std::cout << std::endl;
       }
     }
     info() << "hits size: " << trkhits->size() << endmsg;
-
     return StatusCode::SUCCESS;
   }
 
@@ -47,5 +59,6 @@ public:
 private:
   DataHandle<fcc::MCParticleCollection> m_genParticles;
   DataHandle<fcc::TrackHitCollection> m_trkHits;
+  ToolHandle<IParticleGraph> m_graphTool;
 };
 DECLARE_COMPONENT(ReadTestConsumer)

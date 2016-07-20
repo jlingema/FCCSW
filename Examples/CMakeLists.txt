@@ -4,7 +4,7 @@
 gaudi_subdir(Examples v1r0)
 
 # this declaration will not be needed in the future
-gaudi_depends_on_subdirs(GaudiAlg FWCore Sim/SimG4Interface Detector/DetInterface)
+gaudi_depends_on_subdirs(GaudiAlg Generation FWCore Sim/SimG4Interface Detector/DetInterface)
 
 find_package(ROOT COMPONENTS MathCore GenVector Geom)
 find_package(DD4hep COMPONENTS DDG4)
@@ -13,7 +13,7 @@ find_package(Geant4)
 
 gaudi_add_module(Examples
                  src/*.cpp
-		           INCLUDE_DIRS ROOT GaudiKernel Geant4 DD4hep SimG4Interface DetInterface
+                 INCLUDE_DIRS ROOT GaudiKernel Geant4 DD4hep SimG4Interface DetInterface Generation
                  LINK_LIBRARIES GaudiAlgLib FWCore ROOT GaudiKernel DD4hep Geant4)
 
 
@@ -25,12 +25,12 @@ gaudi_add_test(DummyGen
                FRAMEWORK tests/options/examplejob.py)
 gaudi_add_test(DummyGenCheck
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/tests
-			         COMMAND python ./scripts/dummy_gen_test.py
-			         DEPENDS DummyGen)
+                        COMMAND python ./scripts/dummy_gen_test.py
+                        DEPENDS DummyGen)
 gaudi_add_test(DummyCheck
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/tests
-			         COMMAND python ./scripts/test.py
-			         FAILS)
+                        COMMAND python ./scripts/test.py
+                        FAILS)
 # End of simple examples
 
 # Tests of example configs
