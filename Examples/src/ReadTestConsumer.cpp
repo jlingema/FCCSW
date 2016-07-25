@@ -41,11 +41,11 @@ public:
     for (const auto& mcpart : *mcparticles) {
       if (10 < cntr++) {
         info() << "vertex x: " << mcpart.StartVertex().Position().X << endmsg;
-        auto daughters = m_graphTool->getAllChildParticles(mcpart);
+        auto daughters = m_graphTool->childParticles(mcpart, 1);
         for (auto& daughter : daughters) {
-          std::cout << daughter.getObjectID().index << " ";
+          info() << daughter.getObjectID().index << " ";
         }
-        std::cout << std::endl;
+        info() << endmsg;
       }
     }
     info() << "hits size: " << trkhits->size() << endmsg;
