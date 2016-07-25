@@ -28,6 +28,7 @@ StatusCode BuildParticleGraph::execute() {
     return StatusCode::FAILURE;
   }
   auto graph = m_graph.createAndPut();
+  debug() << "Building graph for " << particles->size() << " particles" << endmsg;
   graph->build(*particles);
   return StatusCode::SUCCESS;
 }

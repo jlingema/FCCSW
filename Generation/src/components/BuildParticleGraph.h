@@ -15,7 +15,7 @@ class MCParticleCollection;
 
 /** @class BuildParticleGraph Generation/Generation/BuildParticleGraph.h BuildParticleGraph.h
  *
- *  Algorithm that creates an acyclic directed graph for easy traversal of MCParticles
+ *  Algorithm that creates an acyclic directed graph for easy traversal of MCParticles and puts it in the TES
  *
  *  @author J. Lingemann
  *  @date 19.07.2016
