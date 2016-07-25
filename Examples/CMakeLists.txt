@@ -64,6 +64,9 @@ gaudi_add_test(SimpleWorkflow
 gaudi_add_test(ExampleOptions
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                FRAMEWORK options/example_options.py)
+gaudi_add_test(ParticleGraphFromPythia
+               WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+               FRAMEWORK options/pythia_particle_graph.py)
 gaudi_add_test(DumpGDML
                FRAMEWORK options/dumpGeo.py)
 
