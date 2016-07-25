@@ -1,7 +1,7 @@
 #include "ParticleGraphTool.h"
 
 // fcc-edm
-#include "utilities/GraphBuilder.h"
+#include "utilities/ParticleGraph.h"
 // datamodel
 #include "datamodel/MCParticleCollection.h"
 #include "datamodel/MCParticle.h"
@@ -16,57 +16,27 @@ ParticleGraphTool::ParticleGraphTool( const std::string& type, const std::string
 }
 
 ParticleGraphTool::~ParticleGraphTool() {
-
 }
 
-StatusCode ParticleGraphTool::initialize() {
-  return GaudiTool::initialize();
+const fcc::ParticleVector ParticleGraphTool::childParticles(const fcc::ConstMCParticle& particle, int numGenerations) {
+  return translate(childNodes(particle, numGenerations));
 }
 
-StatusCode ParticleGraphTool::finalize() {
-  return GaudiTool::finalize();
+const fcc::ParticleVector ParticleGraphTool::parentParticles(const fcc::ConstMCParticle& particle, int numGenerations) {
+  return translate(parentNodes(particle, numGenerations));
 }
 
-const fcc::ParticleVector ParticleGraphTool::getAllChildParticles(const fcc::ConstMCParticle& particle) {
-  return translate(getAllChildNodes(particle));
-}
-
-const fcc::ParticleVector ParticleGraphTool::getAllParentParticles(const fcc::ConstMCParticle& particle) {
-  return translate(getAllParentNodes(particle));
-}
-
-// const fcc::ParticleVector ParticleGraphTool::getImmediateChildParticles(const fcc::ConstMCParticle& particle) {
-//   return translate(getImmediateChildNodes(particle));
-// }
-
-// const fcc::ParticleVector ParticleGraphTool::getImmediateParentParticles(const fcc::ConstMCParticle& particle) {
-//   return translate(getImmediateParentNodes(particle));
-// }
-
-
-const fcc::NodeVector& ParticleGraphTool::getAllChildNodes(const fcc::ConstMCParticle& particle) {
+const fcc::NodeVector& ParticleGraphTool::childNodes(const fcc::ConstMCParticle& particle, int numGenerations) {
   auto graph = m_graphHandle.get();
   const auto& node = graph->getNode(particle);
-  return m_visitor.traverseChildren(node);
+  return m_visitor.traverseChildren(node, numGenerations);
 }
 
-const fcc::NodeVector& ParticleGraphTool::getAllParentNodes(const fcc::ConstMCParticle& particle) {
+const fcc::NodeVector& ParticleGraphTool::parentNodes(const fcc::ConstMCParticle& particle, int numGenerations) {
   auto graph = m_graphHandle.get();
   const auto& node = graph->getNode(particle);
-  return m_visitor.traverseParents(node);
+  return m_visitor.traverseParents(node, numGenerations);
 }
-
-// const fcc::NodeSet& ParticleGraphTool::getImmediateChildNodes(const fcc::ConstMCParticle& particle) {
-//   auto graph = m_graphHandle.get();
-//   const auto& node = graph->getNode(particle);
-//   return node.children();
-// }
-
-// const fcc::NodeSet& ParticleGraphTool::getImmediateParentNodes(const fcc::ConstMCParticle& particle) {
-//   auto graph = m_graphHandle.get();
-//   const auto& node = graph->getNode(particle);
-//   return node.parents();
-// }
 
 fcc::ParticleVector ParticleGraphTool::translate(const fcc::NodeVector& nodes) {
   auto particles = m_particleCollHandle.get();
@@ -77,21 +47,12 @@ fcc::ParticleVector ParticleGraphTool::translate(const fcc::NodeVector& nodes) {
   return result;
 }
 
-// fcc::ParticleVector ParticleGraphTool::translate(const fcc::NodeSet& nodes) {
-//   auto particles = m_particleCollHandle.get();
-//   fcc::ParticleVector result;
-//   for (auto n : node.parents()) {
-//     result.push_back(m_particles->at(n.value().index));
-//   }
-//   return result;
-// }
-
-const fcc::IdNode& ParticleGraphTool::getNode(const fcc::ConstMCParticle& particle) {
+const fcc::IdNode& ParticleGraphTool::node(const fcc::ConstMCParticle& particle) {
   auto graph = m_graphHandle.get();
   return graph->getNode(particle);
 }
 
-fcc::ConstMCParticle ParticleGraphTool::getParticle(const fcc::IdNode& node) {
+fcc::ConstMCParticle ParticleGraphTool::particle(const fcc::IdNode& node) {
   auto particles = m_particleCollHandle.get();
   return particles->at(node.value().index);
 }

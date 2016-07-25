@@ -11,7 +11,7 @@
  *  Interface to a tool that retrieves a ParticleGraph from TES and offers functionality to access traverse the graph
  *
  *  @author J. Lingemann
- *  @date   2008-05-18
+ *  @date   2016-07-19
  */
 
 namespace fcc {
@@ -22,25 +22,36 @@ class ConstMCParticle;
 namespace fcc {
 typedef std::vector<ConstMCParticle> ParticleVector;
 typedef std::vector<const IdNode*> NodeVector;
-// typedef std::set<const IdNode*> NodeSet;
 }
 
 class IParticleGraph : virtual public IAlgTool {
  public:
   DeclareInterfaceID(IParticleGraph, 1, 0);
 
-  virtual const fcc::ParticleVector getAllChildParticles(const fcc::ConstMCParticle&) = 0;
-  virtual const fcc::ParticleVector getAllParentParticles(const fcc::ConstMCParticle&) = 0;
-  // virtual const fcc::ParticleVector getImmediateChildParticles(const fcc::ConstMCParticle&) = 0;
-  // virtual const fcc::ParticleVector getImmediateParentParticles(const fcc::ConstMCParticle&) = 0;
-
-  virtual const fcc::NodeVector& getAllChildNodes(const fcc::ConstMCParticle&) = 0;
-  virtual const fcc::NodeVector& getAllParentNodes(const fcc::ConstMCParticle&) = 0;
-  // virtual const fcc::NodeSet& getImmediateChildNodes(const fcc::ConstMCParticle&) = 0;
-  // virtual const fcc::NodeSet& getImmediateParentNodes(const fcc::ConstMCParticle&) = 0;
-
-  virtual const fcc::IdNode& getNode(const fcc::ConstMCParticle&) = 0;
-  virtual fcc::ConstMCParticle getParticle(const fcc::IdNode&) = 0;
+  /** Get children of a MC particle
+   * @param[in] the MC particle
+   * @param[in] number of generations (-1 for all children)
+   */
+  virtual const fcc::ParticleVector childParticles(const fcc::ConstMCParticle&, int numGenerations = -1) = 0;
+  /** Get parents of a MC particle
+   * @param[in] the MC particle
+   * @param[in] number of generations (-1 for all parents)
+   */
+  virtual const fcc::ParticleVector parentParticles(const fcc::ConstMCParticle&, int numGenerations = -1) = 0;
+  /** Get child nodes of the node corresponding to a MC particle
+   * @param[in] the MC particle
+   * @param[in] number of generations (-1 for all children)
+   */
+  virtual const fcc::NodeVector& childNodes(const fcc::ConstMCParticle&, int numGenerations = -1) = 0;
+  /** Get parent nodes of the node corresponding to a MC particle
+   * @param[in] the MC particle
+   * @param[in] number of generations (-1 for all parents)
+   */
+  virtual const fcc::NodeVector& parentNodes(const fcc::ConstMCParticle&, int numGenerations = -1) = 0;
+  /// Get the node corrsponding to a MC particle
+  virtual const fcc::IdNode& node(const fcc::ConstMCParticle&) = 0;
+  /// Get the particle corresponding to a node
+  virtual fcc::ConstMCParticle particle(const fcc::IdNode&) = 0;
 };
 
 #endif
