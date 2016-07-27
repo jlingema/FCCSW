@@ -23,6 +23,12 @@ hepmc_converter.DataInputs.hepmc.Path="hepmc"
 hepmc_converter.DataOutputs.genparticles.Path="allGenParticles"
 hepmc_converter.DataOutputs.genvertices.Path="allGenVertices"
 
+from Configurables import GenParticleFilter
+### Filters generated particles
+genfilter = GenParticleFilter("StableParticles")
+genfilter.DataInputs.genparticles.Path = "allGenParticles"
+genfilter.DataOutputs.genparticles.Path = "stableGenParticles"
+
 # DD4hep geometry service
 from Configurables import GeoSvc
 ## parse the given xml file
@@ -51,7 +57,7 @@ saveparticlestool.DataOutputs.particles.Path = "smearedParticles"
 saveparticlestool.DataOutputs.particlesMCparticles.Path = "particleMCparticleAssociation"
 # next, create the G4 algorithm, giving the list of names of tools ("XX/YY")
 particle_converter = SimG4PrimariesFromEdmTool("EdmConverter")
-particle_converter.DataInputs.genParticles.Path = "allGenParticles"
+particle_converter.DataInputs.genParticles.Path = "stableGenParticles"
 geantsim = SimG4Alg("SimG4Alg",
                     outputs = ["SimG4SaveSmearedParticles/saveSmearedParticles"],
                     eventProvider=particle_converter)
@@ -69,11 +75,11 @@ THistSvc().OutputLevel=INFO
 from Configurables import PodioOutput
 ## PODIO algorithm
 out = PodioOutput("out", filename = "out_fast_formula.root")
-out.outputCommands = ["keep *"]
+out.outputCommands = ["keep *", "drop allGenParticles"]
 
 # ApplicationMgr
 from Configurables import ApplicationMgr
-ApplicationMgr( TopAlg = [reader, hepmc_converter, geantsim, hist, out],
+ApplicationMgr( TopAlg = [reader, hepmc_converter, genfilter, geantsim, hist, out],
                 EvtSel = 'NONE',
                 EvtMax   = 1,
                 # order is important, as GeoSvc is needed by SimG4Svc

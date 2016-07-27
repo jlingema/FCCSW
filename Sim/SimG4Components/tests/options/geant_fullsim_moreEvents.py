@@ -23,6 +23,13 @@ hepmc_converter.DataInputs.hepmc.Path="hepmc"
 hepmc_converter.DataOutputs.genparticles.Path="allGenParticles"
 hepmc_converter.DataOutputs.genvertices.Path="allGenVertices"
 
+from Configurables import GenParticleFilter
+### Filters generated particles
+genfilter = GenParticleFilter("StableParticles")
+genfilter.DataInputs.genparticles.Path = "allGenParticles"
+genfilter.DataOutputs.genparticles.Path = "stableGenParticles"
+
+
 from Configurables import GeoSvc
 geoservice = GeoSvc("GeoSvc", detectors=['file:../../../Detector/DetFCChhBaseline1/compact/FCChh_DectEmptyMaster.xml',
   'file:../../../Detector/DetFCChhTrackerSimple/compact/Tracker.xml'],
@@ -38,7 +45,7 @@ savetrackertool.DataOutputs.trackHits.Path = "hits"
 savetrackertool.DataOutputs.trackHitsClusters.Path = "hitClusterAssociation"
 
 particle_converter = SimG4PrimariesFromEdmTool("EdmConverter")
-particle_converter.DataInputs.genParticles.Path = "allGenParticles"
+particle_converter.DataInputs.genParticles.Path = "stableGenParticles"
 geantsim = SimG4Alg("SimG4Alg",
                     outputs = ["SimG4SaveTrackerHits/SimG4SaveTrackerHits"],
                     eventProvider=particle_converter)
@@ -47,9 +54,9 @@ from Configurables import PodioOutput
 out = PodioOutput("out",
                   filename = "out_full_moreEvents.root",
                   OutputLevel=DEBUG)
-out.outputCommands = ["keep *"]
+out.outputCommands = ["keep *", "drop allGenParticles"]
 
-ApplicationMgr( TopAlg=[reader, hepmc_converter, geantsim, out],
+ApplicationMgr( TopAlg=[reader, hepmc_converter, genfilter, geantsim, out],
                 EvtSel='NONE',
                 EvtMax=10,
                 ## order! geo needed by geant
