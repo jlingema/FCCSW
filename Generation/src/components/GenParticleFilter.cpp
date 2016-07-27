@@ -1,6 +1,7 @@
 #include "GenParticleFilter.h"
 
 #include "datamodel/LorentzVector.h"
+#include "datamodel/GenVertex.h"
 
 DECLARE_COMPONENT(GenParticleFilter)
 
@@ -16,12 +17,11 @@ StatusCode GenParticleFilter::initialize() {
 }
 
 StatusCode GenParticleFilter::execute() {
-  const fcc::MCParticleCollection* inparticles = m_igenphandle.get();
+  auto inparticles = m_igenphandle.get();
   fcc::MCParticleCollection* particles = new fcc::MCParticleCollection();
-  for(auto ptc : (*inparticles)) {
+  for(const auto& ptc : (*inparticles)) {
     if(ptc.Core().Status == 1) {
-      fcc::MCParticle outptc = particles->create();
-      outptc.Core(ptc.Core()); //COLIN Should not clone only the core!
+      particles->push_back(ptc.clone());
     }
   }
   m_ogenphandle.put(particles);
