@@ -33,6 +33,7 @@ StatusCode HepMCConverter::execute() {
   // currently only final state particles converted (no EndVertex as they didn't decay)
   // TODO add translation of decayed particles
   HepMC::FourVector tmp;
+  std::unordered_map<HepMC::GenVertex*, unsigned> vertexMap;
   for(auto vertex_i = event->vertices_begin();
       vertex_i != event->vertices_end(); ++vertex_i ) {
     tmp = (*vertex_i)->position();
@@ -42,26 +43,29 @@ StatusCode HepMCConverter::execute() {
     position.Y = tmp.y()*hepmc2EdmLength;
     position.Z = tmp.z()*hepmc2EdmLength;
     vertex.Ctau(tmp.t()*Gaudi::Units::c_light*hepmc2EdmLength); // is ctau like this?
+    vertexMap[*vertex_i] = vertex.getObjectID().index;
+  }
+  for (auto particle_i = event->particles_begin();
+       particle_i != event->particles_end(); ++particle_i) {
+    tmp = (*particle_i)->momentum();
+    fcc::MCParticle particle = particles->create();
+    fcc::BareParticle& core = particle.Core();
+    core.Type = (*particle_i)->pdg_id();
+    core.Status = (*particle_i)->status();
+    core.P4.Px = tmp.px()*hepmc2EdmEnergy;
+    core.P4.Py = tmp.py()*hepmc2EdmEnergy;
+    core.P4.Pz = tmp.pz()*hepmc2EdmEnergy;
+    core.P4.Mass = (*particle_i)->generated_mass()*hepmc2EdmEnergy;
 
-    for (auto particle_i = (*vertex_i)->particles_begin(HepMC::children);
-         particle_i != (*vertex_i)->particles_end(HepMC::children);
-         ++particle_i) {
-      // take only final state particles
-      if( (*particle_i)->status() != 1 ) continue;
-
-      tmp = (*particle_i)->momentum();
-      fcc::MCParticle particle = particles->create();
-      fcc::BareParticle& core = particle.Core();
-      core.Type = (*particle_i)->pdg_id();
-      core.Status = (*particle_i)->status();
-      core.P4.Px = tmp.px()*hepmc2EdmEnergy;
-      core.P4.Py = tmp.py()*hepmc2EdmEnergy;
-      core.P4.Pz = tmp.pz()*hepmc2EdmEnergy;
-      core.P4.Mass = (*particle_i)->generated_mass()*hepmc2EdmEnergy;
-      particle.StartVertex(vertex);
+    auto prodVtxIdx = vertexMap.find((*particle_i)->production_vertex());
+    if (prodVtxIdx != end(vertexMap)) {
+      particle.StartVertex(vertices->at(prodVtxIdx->second));
+    }
+    auto endVtxIdx = vertexMap.find((*particle_i)->end_vertex());
+    if (endVtxIdx != end(vertexMap)) {
+      particle.EndVertex(vertices->at(endVtxIdx->second));
     }
   }
-
   m_genphandle.put(particles);
   m_genvhandle.put(vertices);
   return StatusCode::SUCCESS;
