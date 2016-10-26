@@ -73,20 +73,20 @@ delphesRootOutFile=""
 # The second level key - value corresponds to output-type - collection-name. NOTE: Do only change the values, not the keys.
 out_names = {
     # Muon output tool
-    "muons": {"particles": "muons", "mcAssociations": "muonsToMC", "isolationTags": "muonITags"},
+    "muons": {"particles": "muons", "mcAssociations": "muonsToMC", "isolationTags": "muonITags", "isolationTaggedParticles":"taggedMuons"},
     # Electron output tool
-    "electrons": {"particles": "electrons", "mcAssociations": "electronsToMC", "isolationTags": "electronITags"},
+    "electrons": {"particles": "electrons", "mcAssociations": "electronsToMC", "isolationTags": "electronITags", "isolationTaggedParticles":"taggedElectrons"},
     # Charged hadron output tool
     "charged": {"particles": "charged", "mcAssociations": "chargedToMC"},
     # Neutral hadron output tool
     "neutral": {"particles": "neutral", "mcAssociations": "neutralToMC"},
     # Photons output tool
-    "photons": {"particles": "photons", "mcAssociations": "photonsToMC", "isolationTags": "photonITags"},
+    "photons": {"particles": "photons", "mcAssociations": "photonsToMC", "isolationTags": "photonITags", "isolationTaggedParticles":"taggedPhotons"},
     # GenJets output tool
-    "genJets": {"genJets": "genJets", "genJetsFlavorTagged": "genJetsFlavor"},
+    "genJets": {"genJets": "genJets", "genJetsFlavorTagged": "genJetsFlavorTagged", "genJetsFlavorTags":"genJetsFlavorTags"},
     # Jets output tool
-    "jets": {"jets": "jets", "jetConstituents": "jetParts", "jetsFlavorTagged": "jetsFlavor",
-             "jetsBTagged": "bTags", "jetsCTagged": "cTags", "jetsTauTagged": "tauTags"},
+    "jets": {"jets": "jets", "jetConstituents": "jetParts", "taggedJets": "jetsFlavor", "flavorTags":"flavorTags",
+             "bTags": "bTags", "cTags": "cTags", "tauTags": "tauTags"},
     # Missing transverse energy output tool
     "met": {"missingEt": "met"}
     }

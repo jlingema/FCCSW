@@ -8,6 +8,7 @@
 #include "datamodel/JetCollection.h"
 #include "datamodel/ParticleCollection.h"
 #include "datamodel/TaggedJetCollection.h"
+#include "datamodel/TagCollection.h"
 #include "datamodel/MCParticleCollection.h"
 // ROOT
 #include "TObjArray.h"
@@ -20,10 +21,11 @@ DelphesSaveJets::DelphesSaveJets(const std::string& aType, const std::string& aN
 
   declareOutput("jets", m_jets);
   declareOutput("jetConstituents", m_jetParticles);
-  declareOutput("jetsFlavorTagged", m_jetsFlavorTagged);
-  declareOutput("jetsBTagged", m_jetsBTagged);
-  declareOutput("jetsCTagged", m_jetsCTagged);
-  declareOutput("jetsTauTagged", m_jetsTauTagged);
+  declareOutput("taggedJets", m_flavorTaggedJets);
+  declareOutput("flavorTags", m_flavorTags);
+  declareOutput("bTags", m_bTags);
+  declareOutput("cTags", m_cTags);
+  declareOutput("tauTags", m_tauTags);
   declareProperty("delphesArrayName", m_delphesArrayName);
   // needed for AlgTool wit output/input until it appears in Gaudi AlgTool constructor
   declareProperty("DataInputs", inputDataObjects());
@@ -43,10 +45,11 @@ StatusCode DelphesSaveJets::finalize() {
 StatusCode DelphesSaveJets::saveOutput(Delphes& delphes, const fcc::MCParticleCollection& /*mcParticles*/) {
   // Create the collections
   auto colJets = m_jets.createAndPut();
-  auto colJetsFlavor = m_jetsFlavorTagged.createAndPut();
-  auto colBTags = m_jetsBTagged.createAndPut();
-  auto colCTags = m_jetsCTagged.createAndPut();
-  auto colTauTags = m_jetsTauTagged.createAndPut();
+  auto colTaggedJets = m_flavorTaggedJets.createAndPut();
+  auto colFlavorTags = m_flavorTags.createAndPut();
+  auto colBTags = m_bTags.createAndPut();
+  auto colCTags = m_cTags.createAndPut();
+  auto colTauTags = m_tauTags.createAndPut();
   auto colJetParts = m_jetParticles.createAndPut();
 
 
@@ -73,25 +76,28 @@ StatusCode DelphesSaveJets::saveOutput(Delphes& delphes, const fcc::MCParticleCo
     bareJet.p4.mass  = cand->Mass;
     jet.core(bareJet);
 
+    auto taggedJet = colTaggedJets->create();
+    taggedJet.jet(jet);
+
     // Flavor-tag info
-    auto flavorTag        = colJetsFlavor->create();
-    flavorTag.tag(cand->Flavor);
-    flavorTag.jet(jet);
+    auto flavorTag        = colFlavorTags->create();
+    flavorTag.value(cand->Flavor);
+    taggedJet.addtags(flavorTag);
 
     // B-tag info
     auto bTag             = colBTags->create();
-    bTag.tag(cand->BTag & (1 << 0)); // btagging is stored in bit 0 of BTag variable
-    bTag.jet(jet);
+    bTag.value(cand->BTag & (1 << 0)); // btagging is stored in bit 0 of BTag variable
+    taggedJet.addtags(bTag);
 
     // C-tag info
     auto cTag             = colCTags->create();
-    cTag.tag(cand->BTag & (1 << 1)); // ctagging is stored in bit 0 of BTag variable
-    cTag.jet(jet);
+    cTag.value(cand->BTag & (1 << 1)); // ctagging is stored in bit 0 of BTag variable
+    taggedJet.addtags(cTag);
 
     // Tau-tag info
     auto tauTag           = colTauTags->create();
-    tauTag.tag(cand->TauTag);
-    tauTag.jet(jet);
+    tauTag.value(cand->TauTag);
+    taggedJet.addtags(tauTag);
 
     // Flavour-tag info
 
@@ -105,10 +111,10 @@ StatusCode DelphesSaveJets::saveOutput(Delphes& delphes, const fcc::MCParticleCo
 
       debug() << "Jet: "
               << " Id: "       << std::setw(3)  << j+1
-              << " Flavor: "   << std::setw(3)  << flavorTag.tag()
-              << " BTag: "     << std::setprecision(1) << std::setw(3) << bTag.tag()
-              << " CTag: "     << std::setprecision(1) << std::setw(3) << cTag.tag()
-              << " TauTag: "   << std::setprecision(1) << std::setw(3) << tauTag.tag()
+              << " Flavor: "   << std::setw(3)  << flavorTag.value()
+              << " BTag: "     << std::setprecision(1) << std::setw(3) << bTag.value()
+              << " CTag: "     << std::setprecision(1) << std::setw(3) << cTag.value()
+              << " TauTag: "   << std::setprecision(1) << std::setw(3) << tauTag.value()
               << std::scientific
               << " Px: "       << std::setprecision(2) << std::setw(9) << jet.p4().px
               << " Py: "       << std::setprecision(2) << std::setw(9) << jet.p4().py

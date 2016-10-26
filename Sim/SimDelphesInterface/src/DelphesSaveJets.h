@@ -13,6 +13,7 @@ namespace fcc {
 class JetCollection;
 class ParticleCollection;
 class TaggedJetCollection;
+class TagCollection;
 }
 
 /** @class DelphesSaveJets SimG4Components/src/DelphesSaveJets.h DelphesSaveJets.h
@@ -49,14 +50,16 @@ private:
   DataHandle<fcc::JetCollection> m_jets;
   /// Handle to the jet constituents to be saved
   DataHandle<fcc::ParticleCollection> m_jetParticles;
+  /// Handle to the flavor tagged jets
+  DataHandle<fcc::TaggedJetCollection> m_flavorTaggedJets;
   /// Handle to the jet flavor tags to be saved
-  DataHandle<fcc::TaggedJetCollection> m_jetsFlavorTagged;
+  DataHandle<fcc::TagCollection> m_flavorTags;
   /// Handle to the b tags to be saved
-  DataHandle<fcc::TaggedJetCollection> m_jetsBTagged;
+  DataHandle<fcc::TagCollection> m_bTags;
   /// Handle to the c tags to be saved
-  DataHandle<fcc::TaggedJetCollection> m_jetsCTagged;
+  DataHandle<fcc::TagCollection> m_cTags;
   /// Handle to the tau tags to be saved
-  DataHandle<fcc::TaggedJetCollection> m_jetsTauTagged;
+  DataHandle<fcc::TagCollection> m_tauTags;
   /// Name of the Delphes array that should be converted
   std::string m_delphesArrayName;
 

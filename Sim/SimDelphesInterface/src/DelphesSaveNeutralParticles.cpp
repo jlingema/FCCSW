@@ -8,6 +8,7 @@
 #include "datamodel/ParticleCollection.h"
 #include "datamodel/ParticleMCParticleAssociationCollection.h"
 #include "datamodel/TaggedParticleCollection.h"
+#include "datamodel/TagCollection.h"
 #include "datamodel/MCParticleCollection.h"
 // ROOT
 #include "TObjArray.h"
@@ -18,6 +19,7 @@ DelphesSaveNeutralParticles::DelphesSaveNeutralParticles(const std::string& aTyp
   declareInterface<IDelphesSaveOutputTool>(this);
   declareOutput("particles", m_particles);
   declareOutput("mcAssociations", m_mcAssociations);
+  declareOutput("isolationTaggedParticles", m_isolationTaggedParticles);
   declareOutput("isolationTags", m_isolationTags);
   declareProperty("delphesArrayName", m_delphesArrayName);
   declareProperty("saveIsolation", m_saveIso=true);
@@ -41,9 +43,12 @@ StatusCode DelphesSaveNeutralParticles::saveOutput(Delphes& delphes, const fcc::
 
   auto colParticles = m_particles.createAndPut();
   auto ascColParticlesToMC = m_mcAssociations.createAndPut();
-  fcc::TaggedParticleCollection* colITags(nullptr);
+
+  fcc::TaggedParticleCollection* colITaggedParticles(nullptr);
+  fcc::TagCollection* colITags(nullptr);
   if (m_saveIso) {
     colITags = m_isolationTags.createAndPut();
+    colITaggedParticles = m_isolationTaggedParticles.createAndPut();
   }
 
   const TObjArray* delphesColl = delphes.ImportArray(m_delphesArrayName.c_str());
@@ -71,12 +76,14 @@ StatusCode DelphesSaveNeutralParticles::saveOutput(Delphes& delphes, const fcc::
 
     // Isolation-tag info
     float iTagValue = 0;
-    if (colITags!=nullptr) {
-      auto iTag           = colITags->create();
-      iTag.tag(cand->IsolationVar);
-      iTag.particle(particle);
+    if (colITags != nullptr) {
+      auto iTag = colITags->create();
+      auto iTaggedParticle = colITaggedParticles->create();
+      iTag.value(cand->IsolationVar);
+      iTaggedParticle.particle(particle);
+      iTaggedParticle.addtags(iTag);
 
-      iTagValue = iTag.tag();
+      iTagValue = iTag.value();
     }
 
     // Debug: print FCC-EDM tower info

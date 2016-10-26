@@ -13,6 +13,7 @@ namespace fcc {
 class ParticleCollection;
 class ParticleMCParticleAssociationCollection;
 class TaggedParticleCollection;
+class TagCollection;
 }
 
 /** @class DelphesSaveNeutralParticles SimG4Components/src/DelphesSaveNeutralParticles.h DelphesSaveNeutralParticles.h
@@ -50,7 +51,9 @@ private:
   /// Handle to associate particles with MCParticles
   DataHandle<fcc::ParticleMCParticleAssociationCollection> m_mcAssociations;
   /// Handle for particles with isolation information
-  DataHandle<fcc::TaggedParticleCollection> m_isolationTags;
+  DataHandle<fcc::TaggedParticleCollection> m_isolationTaggedParticles;
+  /// Handle for isolation information
+  DataHandle<fcc::TagCollection> m_isolationTags;
   /// Name of the Delphes array that should be converted
   std::string m_delphesArrayName;
   /// Switch whether to save tag information

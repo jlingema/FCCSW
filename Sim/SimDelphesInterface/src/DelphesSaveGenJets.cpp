@@ -7,6 +7,7 @@
 // datamodel
 #include "datamodel/GenJetCollection.h"
 #include "datamodel/TaggedGenJetCollection.h"
+#include "datamodel/TagCollection.h"
 #include "datamodel/MCParticleCollection.h"
 
 // ROOT
@@ -19,6 +20,7 @@ DelphesSaveGenJets::DelphesSaveGenJets(const std::string& aType, const std::stri
   declareInterface<IDelphesSaveOutputTool>(this);
   declareOutput("genJets", m_genJets);
   declareOutput("genJetsFlavorTagged", m_taggedGenJets);
+  declareOutput("genJetsFlavorTags", m_flavorTags);
   declareProperty("delphesArrayName", m_delphesArrayName);
   // needed for AlgTool wit output/input until it appears in Gaudi AlgTool constructor
   declareProperty("DataInputs", inputDataObjects());
@@ -39,6 +41,7 @@ StatusCode DelphesSaveGenJets::saveOutput(Delphes& delphes, const fcc::MCParticl
   // Create the collections
   auto colGenJets = m_genJets.createAndPut();
   auto colTaggedJets = m_taggedGenJets.createAndPut();
+  auto colFlavorTags = m_flavorTags.createAndPut();
 
   const TObjArray* delphesColl = delphes.ImportArray(m_delphesArrayName.c_str());
   if (delphesColl == nullptr) {
@@ -61,8 +64,11 @@ StatusCode DelphesSaveGenJets::saveOutput(Delphes& delphes, const fcc::MCParticl
     jet.core(bareJet);
 
     // Flavor-tag info
+    auto flavorTag = colFlavorTags->create();
+    flavorTag.value(cand->Flavor);
+
     auto flavorGenJet = colTaggedJets->create();
-    flavorGenJet.tag(cand->Flavor);
+    flavorGenJet.addtags(flavorTag);
     flavorGenJet.jet(jet);
 
     // Debug: print FCC-EDM jets info
@@ -75,7 +81,7 @@ StatusCode DelphesSaveGenJets::saveOutput(Delphes& delphes, const fcc::MCParticl
 
       debug() << "Gen Jet: "
               << " Id: "       << std::setw(3)  << j+1
-              << " Flavor: "   << std::setw(3)  << flavorGenJet.tag()
+              << " Flavor: "   << std::setw(3)  << flavorTag.value()
               << std::scientific
               << " Px: "       << std::setprecision(2) << std::setw(9) << jet.p4().px
               << " Py: "       << std::setprecision(2) << std::setw(9) << jet.p4().py

@@ -8,6 +8,7 @@
 #include "datamodel/ParticleCollection.h"
 #include "datamodel/ParticleMCParticleAssociationCollection.h"
 #include "datamodel/TaggedParticleCollection.h"
+#include "datamodel/TagCollection.h"
 #include "datamodel/MCParticleCollection.h"
 // ROOT
 #include "TObjArray.h"
@@ -20,7 +21,8 @@ DelphesSaveChargedParticles::DelphesSaveChargedParticles(const std::string& aTyp
   declareInterface<IDelphesSaveOutputTool>(this);
   declareOutput("particles", m_particles);
   declareOutput("mcAssociations", m_mcAssociations);
-  declareOutput("isolationTags", m_isolationTaggedParticles);
+  declareOutput("isolationTaggedParticles", m_isolationTaggedParticles);
+  declareOutput("isolationTags", m_isolationTags);
   declareProperty("delphesArrayName", m_delphesArrayName);
   declareProperty("saveIsolation", m_saveIso=true);
   // needed for AlgTool wit output/input until it appears in Gaudi AlgTool constructor
@@ -43,9 +45,11 @@ StatusCode DelphesSaveChargedParticles::saveOutput(Delphes& delphes, const fcc::
   auto colParticles = m_particles.createAndPut();
   auto ascColParticlesToMC = m_mcAssociations.createAndPut();
 
-  fcc::TaggedParticleCollection* colITags(nullptr);
+  fcc::TagCollection* colITags(nullptr);
+  fcc::TaggedParticleCollection* colITaggedParticles(nullptr);
   if (m_saveIso) {
-    colITags = m_isolationTaggedParticles.createAndPut();
+    colITags = m_isolationTags.createAndPut();
+    colITaggedParticles = m_isolationTaggedParticles.createAndPut();
   }
 
   const TObjArray* delphesColl = delphes.ImportArray(m_delphesArrayName.c_str());
@@ -71,13 +75,14 @@ StatusCode DelphesSaveChargedParticles::saveOutput(Delphes& delphes, const fcc::
     barePart.vertex.z = cand->Position.Z();
     // Isolation-tag info
     float iTagValue = 0;
-    if (colITags!=nullptr) {
+    if (colITags != nullptr) {
+      auto iTag = colITags->create();
+      auto iTaggedParticle = colITaggedParticles->create();
+      iTag.value(cand->IsolationVar);
+      iTaggedParticle.particle(particle);
+      iTaggedParticle.addtags(iTag);
 
-      auto iTag           = colITags->create();
-      iTag.tag(cand->IsolationVar);
-      iTag.particle(particle);
-
-      iTagValue = iTag.tag();
+      iTagValue = iTag.value();
     }
 
     // Reference to MC - Delphes holds references to all objects related to the <T> object, only one relates to MC particle

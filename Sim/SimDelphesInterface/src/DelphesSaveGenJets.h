@@ -12,6 +12,7 @@
 namespace fcc {
 class GenJetCollection;
 class TaggedGenJetCollection;
+class TagCollection;
 }
 
 class Candidate;
@@ -56,6 +57,8 @@ private:
   DataHandle<fcc::GenJetCollection> m_genJets;
   /// Handle to the jets including additional flavour tag information
   DataHandle<fcc::TaggedGenJetCollection> m_taggedGenJets;
+  /// Handle to the flavor tags
+  DataHandle<fcc::TagCollection> m_flavorTags;
   /// Name of the Delphes array that should be converted
   std::string m_delphesArrayName;
 
