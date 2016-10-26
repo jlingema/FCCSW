@@ -12,11 +12,8 @@
 namespace fcc {
 class JetCollection;
 class ParticleCollection;
-class JetParticleAssociationCollection;
-class JetIntTagAssociationCollection;
+class TaggedJetCollection;
 class TagCollection;
-class IntTagCollection;
-class JetTagAssociationCollection;
 }
 
 /** @class DelphesSaveJets SimG4Components/src/DelphesSaveJets.h DelphesSaveJets.h
@@ -53,24 +50,16 @@ private:
   DataHandle<fcc::JetCollection> m_jets;
   /// Handle to the jet constituents to be saved
   DataHandle<fcc::ParticleCollection> m_jetParticles;
-  /// Handle for associations between the jet and its constituents to be saved
-  DataHandle<fcc::JetParticleAssociationCollection> m_jetParticleAssociations;
+  /// Handle to the flavor tagged jets
+  DataHandle<fcc::TaggedJetCollection> m_flavorTaggedJets;
   /// Handle to the jet flavor tags to be saved
-  DataHandle<fcc::IntTagCollection> m_jetFlavorTags;
-  /// Handle for associations between the jet and its flavor tag to be saved
-  DataHandle<fcc::JetIntTagAssociationCollection> m_jetFlavorAssociations;
+  DataHandle<fcc::TagCollection> m_flavorTags;
   /// Handle to the b tags to be saved
   DataHandle<fcc::TagCollection> m_bTags;
-  /// Handle for associations between the jet and its b-tag to be saved
-  DataHandle<fcc::JetTagAssociationCollection> m_jetBTagAssociations;
   /// Handle to the c tags to be saved
   DataHandle<fcc::TagCollection> m_cTags;
-  /// Handle for associations between the jet and its c-tag to be saved
-  DataHandle<fcc::JetTagAssociationCollection> m_jetCTagAssociations;
   /// Handle to the tau tags to be saved
   DataHandle<fcc::TagCollection> m_tauTags;
-  /// Handle for associations between the jet and its tau-tag to be saved
-  DataHandle<fcc::JetTagAssociationCollection> m_jetTauTagAssociations;
   /// Name of the Delphes array that should be converted
   std::string m_delphesArrayName;
 
