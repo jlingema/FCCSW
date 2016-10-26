@@ -60,7 +60,9 @@ pythiaConfFile="Generation/data//Pythia_ttbar.cmd"
 #pythiaConfFile="Generation/data/Pythia_LHEinput.cmd"
 
 ## Define Delphes card
-delphesCard="Sim/SimDelphesInterface/data/FCChh_DelphesCard_WithDipole_v00.tcl"
+#delphesCard="Sim/SimDelphesInterface/data/FCChh_DelphesCard_WithDipole_v00.tcl"
+delphesCard="/afs/cern.ch/user/h/helsens/FCCsoft/FCCSOFT/newEDM2/delphes/cards/FCC/FCChh.tcl"
+
 
 ## Define Delphes input HepMC and optionaly (non-standard) ROOT output
 ##  - if ROOT file not defined --> data written-out to Gaudi data store (Ouputs)
