@@ -34,22 +34,17 @@ hepmc_converter.DataInputs.hepmc.Path="hepmcevent"
 hepmc_converter.DataOutputs.genparticles.Path="all_genparticles"
 hepmc_converter.DataOutputs.genvertices.Path="all_genvertices"
 
-from Configurables import GenParticleFilter
-### Filters generated particles
-genfilter = GenParticleFilter("StableParticles")
-genfilter.DataInputs.genparticles.Path = "all_genparticles"
-genfilter.DataOutputs.genparticles.Path = "stableGenParticles"
-
-from Configurables import JetClustering_fcc__MCParticleCollection_fcc__GenJetCollection_fcc__GenJetParticleAssociationCollection_ as JetClustering
+# In the name below the "_" replace special C++ characters, such as ":" or "<" and ">", the actual C++ class name is:
+# JetClustering<fcc::MCParticleCollection, fcc::GenJetCollection>
+from Configurables import JetClustering_fcc__MCParticleCollection_fcc__GenJetCollection_ as JetClustering
 genjet_clustering = JetClustering(
     "GenJetClustering",
     verbose = False
 )
 # the input product name matches the output product name of the previous module
-genjet_clustering.DataInputs.particles.Path='stableGenParticles'
+genjet_clustering.DataInputs.particles.Path='all_genparticles'
 # giving a meaningful name for the output product
 genjet_clustering.DataOutputs.jets.Path='genjets'
-genjet_clustering.DataOutputs.constituents.Path='genjets_particles'
 
 from Configurables import PodioOutput
 out = PodioOutput("out",
@@ -59,7 +54,7 @@ out.outputCommands = ["keep *"]
 from Configurables import ApplicationMgr
 ApplicationMgr(
     ## all algorithms should be put here
-    TopAlg=[reader, hepmc_converter, genfilter, genjet_clustering, out],
+    TopAlg=[reader, hepmc_converter, genjet_clustering, out],
     EvtSel='NONE',
     ## number of events
     EvtMax=10,

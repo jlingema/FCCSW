@@ -27,19 +27,19 @@ const fcc::ParticleVector ParticleGraphTool::parentParticles(const fcc::ConstMCP
 }
 
 const fcc::NodeVector& ParticleGraphTool::childNodes(const fcc::ConstMCParticle& particle, int numGenerations) {
-  auto graph = m_graphHandle.get();
+  const auto graph = m_graphHandle.get();
   const auto& node = graph->getNode(particle);
   return m_visitor.traverseChildren(node, numGenerations);
 }
 
 const fcc::NodeVector& ParticleGraphTool::parentNodes(const fcc::ConstMCParticle& particle, int numGenerations) {
-  auto graph = m_graphHandle.get();
+  const auto graph = m_graphHandle.get();
   const auto& node = graph->getNode(particle);
   return m_visitor.traverseParents(node, numGenerations);
 }
 
 fcc::ParticleVector ParticleGraphTool::translate(const fcc::NodeVector& nodes) {
-  auto particles = m_particleCollHandle.get();
+  const auto particles = m_particleCollHandle.get();
   fcc::ParticleVector result;
   for (auto n : nodes) {
     result.push_back(particles->at(n->value().index));
@@ -48,12 +48,12 @@ fcc::ParticleVector ParticleGraphTool::translate(const fcc::NodeVector& nodes) {
 }
 
 const fcc::IdNode& ParticleGraphTool::node(const fcc::ConstMCParticle& particle) {
-  auto graph = m_graphHandle.get();
+  const auto graph = m_graphHandle.get();
   return graph->getNode(particle);
 }
 
 fcc::ConstMCParticle ParticleGraphTool::particle(const fcc::IdNode& node) {
-  auto particles = m_particleCollHandle.get();
+  const auto particles = m_particleCollHandle.get();
   return particles->at(node.value().index);
 }
 

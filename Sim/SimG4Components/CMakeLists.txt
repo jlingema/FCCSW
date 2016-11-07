@@ -26,6 +26,7 @@ gaudi_add_test(GeantFullSimHCal
                FRAMEWORK tests/options/geant_fullsim_hcal.py)
 gaudi_add_test(GeantFullSimECal
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+               ENVIRONMENT LD_PRELOAD+=build.$BINARY_TAG/lib/libDetSegmentation.so 
                FRAMEWORK tests/options/geant_fullsim_ecal.py)
 gaudi_add_test(GeantFullSimGdml
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -36,11 +37,6 @@ gaudi_add_test(GeantFullSimMoreEvents
 gaudi_add_test(GeantFullSimMoreEventsCheckNumEvents
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Sim/SimG4Components/tests/
                COMMAND python ./scripts/geant_fullsim_moreEvents_checkNumEvents.py
-               DEPENDS GeantFullSimMoreEvents)
-gaudi_add_test(GeantFullSimMoreEventsCheckNumParticles
-               ENVIRONMENT PYTHONPATH+=$ENV{PODIO}/python
-               WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Sim/SimG4Components/tests/
-               COMMAND python ./scripts/geant_fullsim_moreEvents_checkNumParticles.py
                DEPENDS GeantFullSimMoreEvents)
 gaudi_add_test(GeantFastSimSimpleSmearing
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Sim/SimG4Components/tests/
