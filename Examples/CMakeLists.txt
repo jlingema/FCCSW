@@ -26,12 +26,12 @@ gaudi_add_test(DummyGen
                FRAMEWORK tests/options/examplejob.py)
 gaudi_add_test(DummyGenCheck
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/tests
-                        COMMAND python ./scripts/dummy_gen_test.py
-                        DEPENDS DummyGen)
+               COMMAND python ./scripts/dummy_gen_test.py
+               DEPENDS DummyGen)
 gaudi_add_test(DummyCheck
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/tests
-                        COMMAND python ./scripts/test.py
-                        FAILS)
+               COMMAND python ./scripts/test.py
+               FAILS)
 # End of simple examples
 
 # Tests of example configs
