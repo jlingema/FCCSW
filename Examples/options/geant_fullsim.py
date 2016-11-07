@@ -26,7 +26,7 @@ hepmc_converter.DataOutputs.genvertices.Path="allGenVertices"
 
 from Configurables import GenParticleFilter
 ### Filters generated particles
-genfilter = GenParticleFilter("StableParticles")
+genfilter = GenParticleFilter("StableParticles", accept=[1])
 genfilter.DataInputs.genparticles.Path = "allGenParticles"
 genfilter.DataOutputs.genparticles.Path = "stableGenParticles"
 
