@@ -29,3 +29,13 @@ include(CTest)
 gaudi_add_test(DumpSimpleBox
                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
                FRAMEWORK tests/dumpSimpleBox.py)
+gaudi_add_test(PrintOverlaps_Extrusions
+               WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+               ENVIRONMENT LD_PRELOAD+=build.$BINARY_TAG/lib/libDetSegmentation.so 
+               COMMAND python ${DD4hep_ROOT}/python/checkOverlaps.py -c Detector/DetFCChhBaseline1/compact/FCChh_DectMaster.xml
+               PASSREGEX "Number of illegal overlaps/extrusions : 0" )
+gaudi_add_test(PrintOverlaps_Sampling
+               WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+               ENVIRONMENT LD_PRELOAD+=build.$BINARY_TAG/lib/libDetSegmentation.so 
+               COMMAND python ${DD4hep_ROOT}/python/checkOverlaps.py -c Detector/DetFCChhBaseline1/compact/FCChh_DectMaster.xml -o s
+               PASSREGEX "Number of illegal overlaps/extrusions : 0" )

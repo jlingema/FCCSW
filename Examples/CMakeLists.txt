@@ -68,11 +68,6 @@ gaudi_add_test(ExampleOptions
                FRAMEWORK options/example_options.py)
 gaudi_add_test(DumpGDML
                FRAMEWORK options/dumpGeo.py)
-gaudi_add_test(PrintOverlaps
-               WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-               ENVIRONMENT LD_PRELOAD+=build.$BINARY_TAG/lib/libDetSegmentation.so 
-               FRAMEWORK options/printOverlaps.py
-               PASSREGEX "Number of illegal overlaps/extrusions : 0" )
 
 # Test of the format-checker:
 gaudi_add_test(FormatCheckerOneFile
