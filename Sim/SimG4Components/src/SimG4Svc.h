@@ -65,8 +65,10 @@ private:
   ToolHandle<ISimG4ActionTool> m_actionsTool;
   /// Handle for the magnetic field initialization
   ToolHandle<ISimG4MagneticFieldTool> m_magneticFieldTool;
-  /// Geant4 commands to be executed
-  std::vector<std::string> m_g4Commands;
+  /// Geant4 commands to be executed before setting user initialisation
+  std::vector<std::string> m_g4PreInitCommands;
+  /// Geant4 commands to be executed after setting user initialisation
+  std::vector<std::string> m_g4PostInitCommands;
   /// Handles to the tools creating regions and fast simulation models
   /// to be replaced with the ToolHandleArray<ISimG4RegionTool> m_regionTools
   std::vector<ISimG4RegionTool*> m_regionTools;
