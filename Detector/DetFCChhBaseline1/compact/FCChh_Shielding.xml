@@ -15,12 +15,11 @@
     <vis name="ShieldingVis" r="0.7" g="0.7" b="0.7" alpha="0.8" showDaughters="false" visible="true"/>
   </display>
   <detectors>
-    <!-- End-caps -->
     <detector name="ShieldingLowerConePos" type="SimpleCone" vis="ShieldingVis">
-      <dimensions rmin1="1467.64*mm" rmax1="2171.65*mm" rmin2="1875.32*mm" rmax2="2774.89*mm" dz="1250*mm" z_offset="10250*mm"  material="Iron"/>
+      <dimensions rmin1="1353.49*mm" rmax1="2002.74*mm" rmin2="1712.25*mm" rmax2="2533.59*mm" dz="1100*mm" z_offset="9400*mm"  material="Iron"/>
     </detector>
         <detector name="ShieldingUpperConePos" type="SimpleCone" vis="ShieldingVis">
-      <dimensions rmin1="2533.59*mm" rmax1="5000*mm" rmin2="2774.89*mm" rmax2="5000*mm" dz="500*mm" z_offset="11000*mm"  material="Iron"/>
+      <dimensions rmin1="1712.25*mm" rmax1="5000*mm" rmin2="1875.32*mm" rmax2="5000*mm" dz="500*mm" z_offset="11000*mm"  material="Iron"/>
     </detector>
     <detector name="ShieldingUpperCylPos" type="SimpleCylinder"  vis="ShieldingVis">
       <dimensions rmin="4000*mm" rmax="5000*mm" dz="2500*mm" phi0="0" deltaphi="360*deg" z_offset="14000*mm" material="Iron"/>
@@ -30,10 +29,10 @@
     </detector>
 
     <detector name="ShieldingLowerConeNeg" type="SimpleCone" vis="ShieldingVis">
-      <dimensions rmin2="1467.64*mm" rmax2="2171.65*mm" rmin1="1875.32*mm" rmax1="2774.89*mm" dz="1250*mm" z_offset="-10250*mm"  material="Iron"/>
+      <dimensions rmin2="1353.49*mm" rmax2="2002.74*mm" rmin1="1712.25*mm" rmax1="2533.59*mm" dz="1100*mm" z_offset="-9400*mm"  material="Iron"/>
     </detector>
         <detector name="ShieldingUpperConeNeg" type="SimpleCone" vis="ShieldingVis">
-      <dimensions rmin2="2533.59*mm" rmax2="5000*mm" rmin1="2774.89*mm" rmax1="5000*mm" dz="500*mm" z_offset="-11000*mm"  material="Iron"/>
+      <dimensions rmin2="1712.25*mm" rmax2="5000*mm" rmin1="1875.32*mm" rmax1="5000*mm" dz="500*mm" z_offset="-11000*mm"  material="Iron"/>
     </detector>
     <detector name="ShieldingUpperCylNeg" type="SimpleCylinder"  vis="ShieldingVis">
       <dimensions rmin="4000*mm" rmax="5000*mm" dz="2500*mm" phi0="0" deltaphi="360*deg" z_offset="-14000*mm" material="Iron"/>
